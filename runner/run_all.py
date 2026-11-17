@@ -16,8 +16,8 @@ CANDIDATES = [  # cheapest first, so early results arrive early
     ("bonsai2", "Ternary-Bonsai-2-27B-Q2_0.gguf"),
 ]
 SETS = ["04-voice-desk.json", "01-tool-agent.json", "02-pdf-answers.json"]
-PORT = 8080  # -c 24576: the longest #2 prompts are ~14k tokens, plus room for thinking
-SERVER_ARGS = ["-c", "24576", "-ngl", "99", "-np", "1", "--port", str(PORT)]
+PORT = 8080  # -c 40960: full_paper item p15 is ~29k tokens, plus room for thinking
+SERVER_ARGS = ["-c", "40960", "-ngl", "99", "-np", "1", "--port", str(PORT)]
 UNITS = {"B": 1 / 2**20, "KB": 1 / 1024, "MB": 1, "GB": 1024}
 
 
