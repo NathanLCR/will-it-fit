@@ -17,7 +17,8 @@ CANDIDATES = [  # cheapest first, so early results arrive early
 ]
 SETS = ["04-voice-desk.json", "01-tool-agent.json", "02-pdf-answers.json"]
 PORT = 8080  # -c 40960: full_paper item p15 is ~29k tokens, plus room for thinking
-SERVER_ARGS = ["-c", "40960", "-ngl", "99", "-np", "1", "--port", str(PORT)]
+# --cache-ram 2048: the default 8 GB host-side prompt cache got the qwen server killed on 16 GB
+SERVER_ARGS = ["-c", "40960", "-ngl", "99", "-np", "1", "--cache-ram", "2048", "--port", str(PORT)]
 UNITS = {"B": 1 / 2**20, "KB": 1 / 1024, "MB": 1, "GB": 1024}
 
 
@@ -53,6 +54,18 @@ def healthy():
     except Exception: return False
 
 
+def start_server(cand, gguf):
+    log(f"starting llama-server for {cand}")
+    srv_log = open(ROOT / "results" / f".server-{cand}.log", "a")
+    srv = subprocess.Popen(["llama-server", "-m", str(gguf), *SERVER_ARGS], stdout=srv_log, stderr=subprocess.STDOUT)
+    t0 = time.time()
+    while not healthy():
+        if srv.poll() is not None: sys.exit(f"llama-server for {cand} exited; see results/.server-{cand}.log")
+        time.sleep(5)
+    log(f"{cand} ready after {time.time() - t0:.0f}s")
+    return srv
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--only-candidates", help="comma list, e.g. gemma4,qwen3.5-9b")
@@ -63,19 +76,16 @@ def main():
     for cand, fname in CANDIDATES:
         if want and cand not in want: continue
         gguf = GGUF / fname
-        log(f"starting llama-server for {cand}")
-        srv_log = open(ROOT / "results" / f".server-{cand}.log", "a")
-        srv = subprocess.Popen(["llama-server", "-m", str(gguf), *SERVER_ARGS], stdout=srv_log, stderr=subprocess.STDOUT)
+        srv = start_server(cand, gguf)
         try:
-            t0 = time.time()
-            while not healthy():
-                if srv.poll() is not None: sys.exit(f"llama-server for {cand} exited; see results/.server-{cand}.log")
-                time.sleep(5)
-            log(f"{cand} ready after {time.time() - t0:.0f}s")
             for think in ("off", "on"):
                 setup = f"{cand}-{'think' if think == 'on' else 'nothink'}"
                 mem = MemSampler(srv.pid); mem.start(); started = time.time()
                 for s in SETS:
+                    if srv.poll() is not None:  # server died (e.g. killed for memory): restart, keep going
+                        log(f"llama-server for {cand} died (exit {srv.returncode}); restarting")
+                        mem.stop.set(); mem.join(); srv = start_server(cand, gguf)
+                        peak = mem.peak; mem = MemSampler(srv.pid); mem.peak = peak; mem.start()
                     log(f"{setup}: {s}")
                     subprocess.run([sys.executable, str(ROOT / "runner" / "run.py"), "--set", f"testsets/{s}",
                                     "--base-url", f"http://localhost:{PORT}/v1", "--model", cand, "--candidate", cand,
@@ -83,8 +93,11 @@ def main():
                                    cwd=ROOT, check=False)
                 mem.stop.set(); mem.join()
                 res = ROOT / "results" / setup / "resources.json"
-                res.write_text(json.dumps({"peak": mem.peak, "server_args": SERVER_ARGS, "sample_every_s": 2,
-                                           "wall_s": round(time.time() - started), "machine": "Apple M2, 16 GB"}, indent=1))
+                prev = json.loads(res.read_text()) if res.exists() else {"peak": {}, "wall_s": 0}
+                peak = {k: max(v, prev["peak"].get(k, 0)) for k, v in mem.peak.items()}  # resumed passes add up
+                res.write_text(json.dumps({"peak": peak, "server_args": SERVER_ARGS, "sample_every_s": 2,
+                                           "wall_s": prev["wall_s"] + round(time.time() - started),
+                                           "machine": "Apple M2, 16 GB"}, indent=1))
                 log(f"{setup} done: peak footprint {mem.peak['footprint_mb']:.0f} MB, {time.time() - started:.0f}s")
         finally:
             srv.terminate()
