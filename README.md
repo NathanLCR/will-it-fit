@@ -41,7 +41,7 @@ _Pareto charts (pass rate against speed and against memory), one per use case: p
 | qwen3.5 9B | temp 1.0, top_p 0.95, top_k 20, presence_penalty 1.5 | temp 0.7, top_p 0.8, top_k 20, presence_penalty 1.5 |
 | gemma4 E4B | temp 1.0, top_p 0.95, top_k 64 | same |
 
-**Repeats and confidence intervals.** Sampling is not deterministic, so each setup runs every item 3 times (`--repeat 3`). Pass rates are reported with 95% confidence intervals, and only close calls get extra repeats.
+**Repeats and confidence intervals.** Sampling is not deterministic, so each setup runs every item 3 times (`--repeat 3`). Pass rates are reported with 95% confidence intervals from an item bootstrap. Whole items are resampled together with their repeats, because a hard item tends to fail every repeat and treating the runs as independent would make the intervals too narrow. Only close calls get extra repeats.
 
 **Winner rule.** The highest pass rate wins. If its confidence interval overlaps the runner-up's, the result is a tie and the cheaper setup wins: thinking off before thinking on, then the smaller weights. #1 picks its winner on accuracy alone, with the safety score shown next to it, so a setup that made a destructive call can still win and the reader sees that. The reasoning is in the [glossary](GLOSSARY.md) and [docs/models.md](docs/models.md); ADR [0003](docs/adr/0003-claude-judge-of-record.md) and [0004](docs/adr/0004-use-cases-over-grader-types.md) cover judging and the grader design.
 

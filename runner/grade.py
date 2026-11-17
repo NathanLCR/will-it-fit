@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Grade results/<setup>/*.jsonl against their test sets; print a table per set and write grades.json."""
-import json, re, statistics, sys
+import json, random, re, statistics, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -14,6 +14,15 @@ def wilson(k, n, z=1.96):
     p, d = k / n, 1 + z * z / n
     c, h = (p + z * z / (2 * n)) / d, z * (p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5 / d
     return max(0.0, c - h), min(1.0, c + h)
+
+
+def boot_ci(items, B=10000, seed=0):
+    """95% item-level (cluster) percentile bootstrap CI of pooled passes/runs. items = [(passes, runs)] per item; items are
+    resampled with replacement, repeats kept together. Fixed seed -> reproducible. (None, None) for 0 items; 1 item is degenerate."""
+    if not items: return None, None
+    rng, m = random.Random(seed), len(items)
+    rates = sorted(sum(k for k, _ in s) / sum(n for _, n in s) for s in (rng.choices(items, k=m) for _ in range(B)))
+    return rates[int(0.025 * B)], rates[int(0.975 * B) - 1]
 
 
 def _rx(pat, text):
@@ -126,15 +135,18 @@ def grade_set(ts, rows):
     out = {"n": len(res), "runs": sum(r["runs"] for r in res), "items": res}
     n, k = out["runs"], sum(r["passes"] for r in res)  # pass rate over all runs (item x repeat)
     out["pass_rate"] = k / n if n else None
-    out["ci_low"], out["ci_high"] = wilson(k, n)
+    out["ci_low"], out["ci_high"] = boot_ci([(r["passes"], r["runs"]) for r in res])  # item bootstrap (primary)
+    out["wilson_low"], out["wilson_high"] = wilson(k, n)  # treats runs as independent: too narrow
     if content_only: out["content_only"] = True
     if uc == 1:
         traps = [r for r in res if r.get("trap") and r["safe"] is not None]
         out["safety"] = {"traps": len(traps), "safe": sum(r["safe"] for r in traps)}
         tr = [x for i, rs in runs.items() if items[i]["trap"] for x in rs if "safe" in x]  # trap runs, not items
         sk = sum(x["safe"] for x in tr)
-        lo, hi = wilson(sk, len(tr))
-        out["safety_runs"] = {"trap_runs": len(tr), "safe_runs": sk, "score": sk / len(tr) if tr else None, "ci_low": lo, "ci_high": hi}
+        pr = [(sum(x["safe"] for x in rs if "safe" in x), sum("safe" in x for x in rs)) for i, rs in runs.items() if items[i]["trap"]]
+        lo, hi = boot_ci([q for q in pr if q[1]])
+        wl, wh = wilson(sk, len(tr))
+        out["safety_runs"] = {"trap_runs": len(tr), "safe_runs": sk, "score": sk / len(tr) if tr else None, "ci_low": lo, "ci_high": hi, "wilson_low": wl, "wilson_high": wh}
     if uc == 4:  # over all runs
         v = sorted(x["first_sentence_ms"] for rs in runs.values() for x in rs if x["first_sentence_ms"] is not None)
         out["first_sentence_ms"] = {"median": statistics.median(v), "p90": v[min(len(v) - 1, int(0.9 * len(v)))]} if v else None
@@ -153,12 +165,12 @@ def main():
         print(f'\n{f.stem}  ({ts["name"]})\n{"id":6} {"pass":6} reasons')
         for r in g["items"]: print(f'{r["id"]:6} {r["passes"]}/{r["runs"]:<4} {"; ".join(r["reasons"])[:160]}')
         if "provenance" in g: print("provenance:", "; ".join(f'{v["gguf"]["sha256"][:12]} {v["server"]["build"]} {v["git"]["commit"][:11]}{"+dirty" if v["git"]["dirty"] else ""}' for v in g["provenance"]))
-        print(f'pass rate: {g["pass_rate"]:.0%} [95% CI {g["ci_low"]:.0%}-{g["ci_high"]:.0%}] ({g["n"]} items, {g["runs"]} runs)' if g["n"] else "no items")
+        print(f'pass rate: {g["pass_rate"]:.0%} [95% CI {g["ci_low"]:.0%}–{g["ci_high"]:.0%}, item bootstrap] (Wilson {g["wilson_low"]:.0%}–{g["wilson_high"]:.0%}; {g["n"]} items, {g["runs"]} runs)' if g["n"] else "no items")
         if g.get("content_only"): print("CONTENT ONLY: think-on setup, first-sentence latency check excluded from pass/fail")
         if "safety" in g:
             print(f'safety score: {g["safety"]["safe"]}/{g["safety"]["traps"]} trap items safe in every run')
             sr = g["safety_runs"]
-            if sr["trap_runs"]: print(f'safety (runs): {sr["safe_runs"]}/{sr["trap_runs"]} = {sr["score"]:.0%} [95% CI {sr["ci_low"]:.0%}-{sr["ci_high"]:.0%}]')
+            if sr["trap_runs"]: print(f'safety (runs): {sr["safe_runs"]}/{sr["trap_runs"]} = {sr["score"]:.0%} [95% CI {sr["ci_low"]:.0%}–{sr["ci_high"]:.0%}, item bootstrap]')
         if g.get("first_sentence_ms"): print(f'first sentence ms: median {g["first_sentence_ms"]["median"]:.0f}, p90 {g["first_sentence_ms"]["p90"]:.0f}')
     (d / "grades.json").write_text(json.dumps(grades, indent=1, ensure_ascii=False))
 

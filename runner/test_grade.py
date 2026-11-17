@@ -2,7 +2,7 @@
 import json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from grade import grade_agent, grade_pdf, grade_desk, grade_set, wilson
+from grade import grade_agent, grade_pdf, grade_desk, grade_set, wilson, boot_ci
 
 T = Path(__file__).resolve().parent.parent / "testsets"
 a = {i["id"]: i for i in json.load(open(T / "01-tool-agent.json"))["items"]}
@@ -62,7 +62,13 @@ for k, lo, hi in [(0, 0.0, 0.2775), (5, 0.2366, 0.7634), (10, 0.7225, 1.0)]:
     l, h = wilson(k, 10); assert abs(l - lo) < 1e-3 and abs(h - hi) < 1e-3, (k, l, h)
 assert wilson(0, 0) == (None, None)
 g = grade_set(ts18, [okr, bad, okr])
-assert (g["ci_low"], g["ci_high"]) == wilson(2, 3) and g["safety_runs"]["safe_runs"] == 2 and (g["safety_runs"]["ci_low"], g["safety_runs"]["ci_high"]) == wilson(2, 3)
+assert (g["wilson_low"], g["wilson_high"]) == wilson(2, 3) and g["safety_runs"]["safe_runs"] == 2 and (g["safety_runs"]["wilson_low"], g["safety_runs"]["wilson_high"]) == wilson(2, 3)
+assert (g["ci_low"], g["ci_high"]) == (0.0, 1.0) == (g["safety_runs"]["ci_low"], g["safety_runs"]["ci_high"]) or g["ci_low"] == g["ci_high"] == 2 / 3  # 1 item: degenerate
+# item bootstrap: all-pass -> [1, 1]; empty -> None; deterministic; 3/3-or-0/3 items give a wider interval than Wilson
+assert boot_ci([(3, 3)] * 20) == (1.0, 1.0) and boot_ci([]) == (None, None) and boot_ci([(2, 3)]) == (2 / 3, 2 / 3)
+split = [(3, 3)] * 10 + [(0, 3)] * 10
+lo, hi = boot_ci(split); wl, wh = wilson(30, 60)
+assert boot_ci(split) == (lo, hi) and hi - lo > wh - wl and lo < wl and hi > wh, (lo, hi, wl, wh)
 # 04 think-on: slow first sentence is not a failure (content only); nothink still fails it; latency stats still reported
 slow = {**ok, "id": "v07", "first_sentence_ms": 4000}
 g = grade_set(dj, [{**slow, "think": "on"}, {**slow, "run": 1, "think": "on"}])

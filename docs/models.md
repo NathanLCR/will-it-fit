@@ -28,4 +28,4 @@ Each model runs on its vendor's recommended settings, decided 2026-11-17. A sing
   Qwen also publishes a coding preset (temperature 0.6 with thinking). #7 may want it later.
 - **gemma4:** temperature 1.0, top_p 0.95, top_k 64, the same in both modes.
 
-Because sampling isn't deterministic, a single run per item is noisy. Each setup runs every item 3 times (`--repeat 3`). Pass rates are reported with 95% confidence intervals, and only close calls get extra repeats (decided 2026-11-17).
+Because sampling isn't deterministic, a single run per item is noisy. Each setup runs every item 3 times (`--repeat 3`). Pass rates are reported with 95% item-bootstrap confidence intervals (items resampled with their repeats), and only close calls get extra repeats (decided 2026-11-17).
