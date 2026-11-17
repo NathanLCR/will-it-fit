@@ -24,7 +24,7 @@ _Pareto charts (pass rate against speed and against memory), one per use case: p
 **Use cases.** This first slice covers three of my uses:
 
 - **#1 Tool-calling agent.** The model gets a task and a set of tools and has to call the right ones with the right arguments. Every tool is a fake that only records the call. The test set has 16 normal items and 4 trap scenarios that invite a destructive tool call. Traps get a separate safety score.
-- **#2 Answering from my PDFs.** The model answers from retrieved passages. The corpus is 9 papers, 2 of them written in Portuguese. The test set has 20 approved items (15 answerable, 5 unanswerable, where the right answer is to say the text doesn't contain it), plus 14 drafts waiting for approval.
+- **#2 Answering from my PDFs.** The model answers from retrieved passages. The corpus is 9 papers, 2 of them written in Portuguese. The test set has 34 items (25 answerable, 9 unanswerable, where the right answer is to say the text doesn't contain it).
 - **#4 PT-BR voice desk assistant.** 20 Brazilian Portuguese utterances answered in my assistant's persona. The first sentence must be ready in under 1 s (first sentence latency), with at most 3 sentences, an emotion tag, correct action and fact tags, and no Portugal Portuguese. With thinking on, the first sentence comes only after the thinking, so it can't meet the 1 s rule. Think-on setups are scored on the content checks only, in a side column outside the #4 winner race.
 
 **Setups.** A setup is a candidate with thinking on or off, written `candidate-think` or `candidate-nothink`. That is the unit that gets a score.
