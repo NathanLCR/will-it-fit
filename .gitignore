@@ -1,0 +1,13 @@
+# Kept local, never published (see README "What's not in this repo")
+# Real persona prompt
+testsets/frozen/desk-system-prompt.txt
+# Copied paper passages
+testsets/02-pdf-answers.json
+# Raw model outputs may quote private context; only summaries are published
+results/*
+!results/summary/
+
+__pycache__/
+*.pyc
+.venv/
+.DS_Store

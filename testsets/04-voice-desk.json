@@ -1,0 +1,178 @@
+{
+  "use_case": 4,
+  "name": "Voice and desk assistant",
+  "system_prompt_file": "frozen/desk-system-prompt.txt",
+  "stream": true,
+  "grading": "Automatic, per reply, on the streamed output split by the desk-assistant TagStreamParser. Pass = all checks below. Latency reported as median and p90 across items and runs.",
+  "checks": {
+    "first_sentence_ms": "Time from request sent to the first 'sentence' event. Pass under 1000.",
+    "max_sentences": 3,
+    "leading_emotion": "Reply starts with [emotion:<name>] using one of the 12 emotions in the prompt.",
+    "no_markdown": "(?m)(^\\s*[-*#>]|\\*\\*|`|^\\s*\\d+\\.)",
+    "no_pt_pt": "(?i)\\b(est[aá]s|tens|fixe|telem[oó]vel|ecr[aã]|autocarro|pequeno-almo[cç]o|casa de banho|utilizador|rapariga|sumo)\\b|\\best(ou|á|amos|ão) a [a-zà-ú]+(ar|er|ir)\\b",
+    "action": "If expect_action is set (a string, or a list where any one is accepted), exactly one matching [action:...] tag must appear. If null, no [action:] tag may appear.",
+    "fact": "If expect_fact is true, a [fact:...] tag must appear. If false, none may appear."
+  },
+  "items": [
+    {
+      "id": "v01",
+      "status": "approved",
+      "utterance": "Oi, tudo bem?",
+      "expect_action": null,
+      "expect_fact": false
+    },
+    {
+      "id": "v02",
+      "status": "approved",
+      "utterance": "Que horas são?",
+      "expect_action": null,
+      "expect_fact": false,
+      "must_contain": [
+        "15[:h]40|três e quarenta|quinze (horas )?e quarenta"
+      ]
+    },
+    {
+      "id": "v03",
+      "status": "approved",
+      "utterance": "Que dia é hoje?",
+      "expect_action": null,
+      "expect_fact": false,
+      "must_contain": [
+        "(?i)ter[cç]a|17"
+      ]
+    },
+    {
+      "id": "v04",
+      "status": "approved",
+      "utterance": "Tira um print da tela inteira.",
+      "expect_action": "shortcut:screenshot_full",
+      "expect_fact": false
+    },
+    {
+      "id": "v05",
+      "status": "approved",
+      "utterance": "Bloqueia o computador, vou sair rapidinho.",
+      "expect_action": "shortcut:lock_screen",
+      "expect_fact": false
+    },
+    {
+      "id": "v06",
+      "status": "approved",
+      "utterance": "Começa um pomodoro de vinte e cinco minutos.",
+      "expect_action": [
+        "pomodoro:start",
+        "shortcut:pomodoro_25"
+      ],
+      "expect_fact": false
+    },
+    {
+      "id": "v07",
+      "status": "approved",
+      "utterance": "Pausa a música.",
+      "expect_action": "shortcut:play_pause",
+      "expect_fact": false
+    },
+    {
+      "id": "v08",
+      "status": "approved",
+      "utterance": "Aumenta o volume.",
+      "expect_action": "shortcut:volume_up",
+      "expect_fact": false
+    },
+    {
+      "id": "v09",
+      "status": "approved",
+      "utterance": "Abre o Spotify.",
+      "expect_action": "app:Spotify",
+      "expect_fact": false,
+      "notes": "Spotify is already open; switching to it is still correct."
+    },
+    {
+      "id": "v10",
+      "status": "approved",
+      "utterance": "Abre o Notion pra mim.",
+      "expect_action": "app:Notion",
+      "expect_fact": false
+    },
+    {
+      "id": "v11",
+      "status": "approved",
+      "utterance": "Como tá meu dia hoje?",
+      "expect_action": "today:brief",
+      "expect_fact": false
+    },
+    {
+      "id": "v12",
+      "status": "approved",
+      "utterance": "Lembra que eu prefiro café sem açúcar.",
+      "expect_action": null,
+      "expect_fact": true
+    },
+    {
+      "id": "v13",
+      "status": "approved",
+      "utterance": "Meu orientador se chama Fernando, guarda isso.",
+      "expect_action": null,
+      "expect_fact": true
+    },
+    {
+      "id": "v14",
+      "status": "approved",
+      "utterance": "Tô muito cansado hoje.",
+      "expect_action": null,
+      "expect_fact": false,
+      "notes": "Should pick an empathetic emotion, not happy."
+    },
+    {
+      "id": "v15",
+      "status": "approved",
+      "utterance": "Consegui passar na prova de estatística!",
+      "expect_action": null,
+      "expect_fact": false
+    },
+    {
+      "id": "v16",
+      "status": "approved",
+      "utterance": "Me explica rapidinho o que é um p-valor.",
+      "expect_action": null,
+      "expect_fact": false,
+      "notes": "Hardest for the 2-sentence bar: a model that lectures fails."
+    },
+    {
+      "id": "v17",
+      "status": "approved",
+      "utterance": "Quanto é dezoito vezes sete?",
+      "expect_action": null,
+      "expect_fact": false,
+      "must_contain": [
+        "126|cento e vinte e seis"
+      ]
+    },
+    {
+      "id": "v18",
+      "status": "approved",
+      "utterance": "Me conta uma piada curta.",
+      "expect_action": null,
+      "expect_fact": false
+    },
+    {
+      "id": "v19",
+      "status": "approved",
+      "utterance": "Fecha todos os apps e apaga meus downloads.",
+      "expect_action": null,
+      "expect_fact": false,
+      "notes": "No action exists for this; must decline briefly without inventing a tag."
+    },
+    {
+      "id": "v20",
+      "status": "approved",
+      "utterance": "Qual a previsão do tempo pra amanhã em São Paulo?",
+      "expect_action": null,
+      "expect_fact": false,
+      "notes": "No weather source in context; must say it doesn't know rather than invent a forecast.",
+      "must_not_contain": [
+        "\\d+\\s?(°|graus)"
+      ]
+    }
+  ]
+}
