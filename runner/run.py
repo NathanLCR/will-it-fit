@@ -10,6 +10,12 @@ from tagparser import TagStreamParser
 ROOT = Path(__file__).resolve().parent.parent
 SAMPLING = {k: v for k, v in json.load(open(Path(__file__).parent / "sampling.json")).items() if not k.startswith("_")}
 THINK_RE = re.compile(r"<think>.*?</think>", re.S)
+TIMINGS = []  # llama-server "timings" of every request in the current item run (speed numbers)
+TIMING_KEYS = ("prompt_n", "prompt_ms", "prompt_per_second", "predicted_n", "predicted_ms", "predicted_per_second")
+
+
+def keep_timings(t):
+    if t: TIMINGS.append({k: t[k] for k in TIMING_KEYS if k in t})
 
 
 def strip_think(t):
@@ -49,7 +55,9 @@ def chat(args, messages, tools=None):
     body = {"messages": messages}
     if tools: body["tools"] = tools
     with post(args, body) as r:
-        return json.load(r)["choices"][0]["message"]
+        j = json.load(r)
+    keep_timings(j.get("timings"))
+    return j["choices"][0]["message"]
 
 
 def mock_result(item, shared, name, call_args, chunk_text):
@@ -111,7 +119,8 @@ def run_desk(args, item, system):
         for line in r:
             line = line.decode().strip()
             if not line.startswith("data:") or line.endswith("[DONE]"): continue
-            ch = json.loads(line[5:]).get("choices") or [{}]
+            j = json.loads(line[5:]); keep_timings(j.get("timings"))
+            ch = j.get("choices") or [{}]
             piece = (ch[0].get("delta") or {}).get("content") or ""
             raw += piece
             take(parser.feed(filt.feed(piece)))
@@ -186,7 +195,8 @@ def main():
     p.add_argument("--candidate", required=True, choices=list(SAMPLING))
     p.add_argument("--think", required=True, choices=["on", "off"])
     p.add_argument("--repeat", type=int, default=1); p.add_argument("--include-drafts", action="store_true")
-    p.add_argument("--only"); p.add_argument("--gguf", required=True, help="weights file served by llama-server (hashed for provenance)")
+    p.add_argument("--only"); p.add_argument("--redo", action="store_true", help="rerun items that already have a result")
+    p.add_argument("--gguf", required=True, help="weights file served by llama-server (hashed for provenance)")
     args = p.parse_args()
     args.sampling = SAMPLING[args.candidate]["think" if args.think == "on" else "nothink"]
     setp = Path(args.set).resolve(); ts = json.load(open(setp))
@@ -214,14 +224,18 @@ def main():
         if uc == 2 and not item.get("context_chunks"):
             print(f'skip {item["id"]}: context_chunks is null (not frozen yet)'); continue
         for run in range(args.repeat):
-            t0 = time.time()
+            done = rows.get((item["id"], run))
+            if done and "error" not in done and not args.redo:
+                print(f'{item["id"]} run {run}: already done, skipped'); continue
+            t0 = time.time(); TIMINGS.clear()
             try:
                 res = run_agent(args, item, ts, frozen, chunk_text) if uc == 1 else run_pdf(args, item) if uc == 2 else run_desk(args, item, system)
             except Exception as e:
                 res = {"error": repr(e)}
             rows[(item["id"], run)] = {"id": item["id"], "run": run, "set": str(setp), "setup": args.setup, "model": args.model,
                                        "candidate": args.candidate, "think": args.think, "sampling": args.sampling,
-                                       "wall_s": round(time.time() - t0, 2), **res}
+                                       "wall_s": round(time.time() - t0, 2), "timings": list(TIMINGS), **res}
+            out.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows.values()))  # save as we go
             print(f'{item["id"]} run {run}: {"ERROR " + res["error"] if "error" in res else "done"} ({time.time() - t0:.1f}s)')
     out.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows.values()))
     prov = out.with_suffix(".provenance.json"); write_provenance(prov, args, setp, started)
