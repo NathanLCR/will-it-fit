@@ -3,13 +3,15 @@
 Retrieved items: article-rag Retriever.hybrid_retrieve([question], top_k=6).
 Items with injected_gold: those chunks replace the lowest-ranked results (total stays top_k).
 Full-paper items: every chunk of each context_papers paper, page/chunk order.
-Run with article-rag's venv: /Users/nathanlucio/Desktop/Projects/article-rag/.venv/bin/python scripts/freeze_pdf_context.py
+Run with article-rag's venv, pointing ARTICLE_RAG_DIR at your article-rag checkout:
+    ARTICLE_RAG_DIR=../article-rag ../article-rag/.venv/bin/python scripts/freeze_pdf_context.py
 """
 import json
+import os
 import sys
 from pathlib import Path
 
-RAG = Path("/Users/nathanlucio/Desktop/Projects/article-rag")
+RAG = Path(os.environ.get("ARTICLE_RAG_DIR", "../article-rag")).expanduser().resolve()
 sys.path.insert(0, str(RAG))
 from rag.embeddings import create_embedder  # noqa: E402
 from rag.retrieval import Retriever  # noqa: E402

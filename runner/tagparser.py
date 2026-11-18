@@ -1,4 +1,4 @@
-# Vendored (copied, not imported) from /Users/nathanlucio/Desktop/desk-assistant/app/llm.py: constants and TagStreamParser.
+# Vendored (copied, not imported) from lupin-desk (github.com/NathanLCR/lupin-desk) app/llm.py: constants and TagStreamParser.
 import re
 from dataclasses import dataclass, field
 

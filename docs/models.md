@@ -1,6 +1,6 @@
 # Candidate model files
 
-The weights are on the external SSD at `/Volumes/ZX20/models/gguf/`, and every model is served with Homebrew `llama-server` 1.0.0 (build 12359). See ADR 0001.
+The weights live in `$GGUF_DIR` (an external SSD on my machine), and every model is served with Homebrew `llama-server` 1.0.0 (build 12359). See ADR 0001.
 
 | Candidate | File | Source | Size | Cold load |
 |---|---|---|---|---|

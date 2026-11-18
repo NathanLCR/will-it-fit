@@ -85,13 +85,13 @@ Running the candidates added three results from the logs:
 **Prerequisites**
 
 - Homebrew `llama-server` (`brew install llama.cpp`). I used 1.0.0, build 12359.
-- The GGUF files, listed in [docs/models.md](docs/models.md). Mine are on an external SSD at `/Volumes/ZX20/models/gguf/`.
+- The GGUF files, listed in [docs/models.md](docs/models.md). Set `GGUF_DIR` to the folder that holds them (default `models/gguf`).
 - Python 3, standard library only.
 
 **1. Start the server and wait until it is ready.** Cold loads take 3 to 6 minutes from the SSD, and the load must not land inside #4's timings.
 
 ```bash
-llama-server -m /Volumes/ZX20/models/gguf/Qwen3.5-9B-Q4_K_M.gguf -c 8192 -ngl 99 --port 8080 &
+llama-server -m $GGUF_DIR/Qwen3.5-9B-Q4_K_M.gguf -c 8192 -ngl 99 --port 8080 &
 until curl -sf http://localhost:8080/health >/dev/null; do sleep 5; done
 ```
 
@@ -103,7 +103,7 @@ python3 runner/run.py \
   --base-url http://localhost:8080 \
   --model qwen3.5-9b --candidate qwen3.5-9b --think off \
   --setup qwen3.5-9b-nothink --repeat 3 \
-  --gguf /Volumes/ZX20/models/gguf/Qwen3.5-9B-Q4_K_M.gguf
+  --gguf $GGUF_DIR/Qwen3.5-9B-Q4_K_M.gguf
 ```
 
 Other flags: `--only ID,ID` runs selected items, and `--include-drafts` also runs items not marked `approved`.

@@ -1,4 +1,4 @@
-# Vendored from /Users/nathanlucio/Desktop/Projects/article-rag/rag/prompts.py (build_answer_prompt, _build_context, CHUNK_ID_PATTERN); chunks are dicts here instead of RetrievedChunk.
+# Vendored from article-rag (github.com/NathanLCR/article-rag) rag/prompts.py (build_answer_prompt, _build_context, CHUNK_ID_PATTERN); chunks are dicts here instead of RetrievedChunk.
 import re
 
 CHUNK_ID_PATTERN = re.compile(r"[\w.-]+-p\d+-c\d+\b")

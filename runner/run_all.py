@@ -5,11 +5,11 @@ Starts one llama-server per candidate, waits for /health, runs both thinking mod
 While the server is up, samples its memory every 2 s and writes the peak to
 results/<setup>/resources.json. Safe to re-run: run.py skips items that already have a result.
 """
-import argparse, datetime, json, re, subprocess, sys, threading, time, urllib.request
+import argparse, datetime, json, os, re, subprocess, sys, threading, time, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-GGUF = Path("/Volumes/ZX20/models/gguf")
+GGUF = Path(os.environ.get("GGUF_DIR", "models/gguf")).expanduser()  # where the .gguf weights live
 CANDIDATES = [  # cheapest first, so early results arrive early
     ("gemma4", "gemma-4-E4B-it-Q4_K_M.gguf"),
     ("qwen3.5-9b", "Qwen3.5-9B-Q4_K_M.gguf"),
