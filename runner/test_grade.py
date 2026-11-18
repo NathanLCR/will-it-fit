@@ -6,9 +6,19 @@ from grade import grade_agent, grade_pdf, grade_desk, grade_set, wilson, boot_ci
 
 T = Path(__file__).resolve().parent.parent / "testsets"
 a = {i["id"]: i for i in json.load(open(T / "01-tool-agent.json"))["items"]}
-p = {i["id"]: i for i in json.load(open(T / "02-pdf-answers.json"))["items"]}
 dj = json.load(open(T / "04-voice-desk.json")); d = {i["id"]: i for i in dj["items"]}
-INSUF = json.load(open(T / "02-pdf-answers.json"))["insufficient_regex"]
+pdf_path = T / "02-pdf-answers.json"
+if pdf_path.exists():
+    pdf_ts = json.load(open(pdf_path))
+    p = {i["id"]: i for i in pdf_ts["items"]}
+    INSUF = pdf_ts["insufficient_regex"]
+else:
+    # testsets/02-pdf-answers.json is gitignored locally; CI exercises grade_pdf with equivalent synthetic fixtures.
+    INSUF = r"(?i)insufficient|not (in|stated|reported|mentioned|provided)|does not (say|report|state|mention)"
+    p = {
+        "p02": {"answerable": True, "must_match": [r"81[.,]6", r"78[.,]1", r"(?i)rocketeval"], "gold_chunks": ["2026.emnlp-main.1742-p6-c0"]},
+        "p16": {"answerable": False, "trap_values": [r"\$\s?\d", r"\d+\s?(USD|dollars)"]},
+    }
 
 def call(tool, turn=1, **args): return {"turn": turn, "tool": tool, "args": args}
 
