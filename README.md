@@ -1,6 +1,6 @@
-# local-model-eval
+# will-it-fit
 
-[![CI](https://github.com/NathanLCR/local-model-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/NathanLCR/local-model-eval/actions/workflows/ci.yml)
+[![CI](https://github.com/NathanLCR/will-it-fit/actions/workflows/ci.yml/badge.svg)](https://github.com/NathanLCR/will-it-fit/actions/workflows/ci.yml)
 
 Which local models, run on my Apple M2 16 GB Mac, are good enough for each of my real use cases? Public leaderboards rank models on tasks I never do, on hardware I don't own. I would rather know which setup wins at the three jobs I actually give a local model, at what speed and memory cost, and where the winner is only tied with something cheaper.
 

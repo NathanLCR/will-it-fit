@@ -1,4 +1,4 @@
-# local-model-eval
+# will-it-fit
 
 Tests which local models, run on this Mac, are good enough for each of Nathan's use cases.
 
@@ -6,7 +6,7 @@ Tests which local models, run on this Mac, are good enough for each of Nathan's 
 
 ### Issue tracker
 
-GitHub Issues on `NathanLCR/local-model-eval` via `gh` (repo not created yet; no remote). See `docs/agents/issue-tracker.md`.
+GitHub Issues on `NathanLCR/will-it-fit` via `gh`. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
