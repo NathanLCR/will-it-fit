@@ -225,7 +225,8 @@ def main():
             print(f'skip {item["id"]}: context_chunks is null (not frozen yet)'); continue
         for run in range(args.repeat):
             done = rows.get((item["id"], run))
-            if done and "error" not in done and not args.redo:
+            # a timeout is a result (counts as a fail), not a crash: keep it on resume
+            if done and ("error" not in done or done["error"].startswith("TimeoutError")) and not args.redo:
                 print(f'{item["id"]} run {run}: already done, skipped'); continue
             t0 = time.time(); TIMINGS.clear()
             try:
