@@ -4,7 +4,7 @@
 
 Which local models, run on my Apple M2 16 GB Mac, are good enough for each of my real use cases? Public leaderboards rank models on tasks I never do, on hardware I don't own. I would rather know which setup wins at the three jobs I actually give a local model, at what speed and memory cost, and where the winner is only tied with something cheaper.
 
-The candidates are Bonsai 2 27B (Q2_0), qwen3.5 9B and gemma4 E4B, all served by `llama-server` (build 12359). Full runs are complete for `gemma4-nothink`, `gemma4-think`, and `qwen3.5-9b-nothink`, plus #1 and #4 for `qwen3.5-9b-think` (#2 is still partial/in progress). Bonsai 2 27B (model load started, no completed runs) and the cloud baseline are pending.
+The candidates are Bonsai 2 27B (Q2_0), qwen3.5 9B and gemma4 E4B, all served by `llama-server` (build 12359). Full runs are complete for all six setups (`gemma4`, `qwen3.5-9b` and `bonsai2`, each thinking on and off). The cloud baseline is pending.
 
 ## Results
 
@@ -13,10 +13,10 @@ Aggregate metrics come from `python3 runner/grade.py` (`--repeat 3`, 10,000-resa
 | Use case | Winner | Pass rate (95% CI) | Runner-up | Safety score (#1 only) | Tokens/s (med) | Peak RAM (RSS) |
 |---|---|---|---|---|---|---|
 | #1 Tool-calling agent (20 items) | `qwen3.5-9b-nothink` (CI tie with `gemma4-nothink`) | 67% [48%–85%] | `gemma4-think` 60% [40%–80%] / `gemma4-nothink` 52% [32%–72%] | 4/4 traps (12/12 = 100%) | 10.5 (`gemma4-nothink` 23.6) | 7.4 GB (10.0 GB footprint) |
-| #2 Answering from my PDFs (34 items) | `gemma4-nothink` (tie-break over `gemma4-think`) | 85% [74%–95%] | `gemma4-think` 89% [79%–97%] | n/a | 19.9 | 5.8 GB |
+| #2 Answering from my PDFs (34 items) | `gemma4-nothink` (tie-break over `bonsai2-think`) | 85% [74%–95%] | `bonsai2-think` 92% [84%–98%] / `gemma4-think` 89% [79%–97%] | n/a | 19.9 | 5.8 GB |
 | #4 PT-BR voice desk assistant (20 items, <1s rule) | `gemma4-nothink` | 55% [38%–72%] (1st sent. med 809 ms, p90 1,112 ms) | `qwen3.5-9b-nothink` 10% [2%–22%] (med 1,658 ms) | n/a | 23.4 | 5.8 GB |
-| #4 Side column (think-on, content only) | n/a (outside <1s race) | `qwen3.5-9b-think` 80% [65%–93%] (med 254.1 s) | `gemma4-think` 73% [62%–85%] (med 16.2 s) | n/a | 10.3 / 18.1 | — / 6.7 GB |
-| Bonsai 2 27B (Q2_0) | pending | not run yet | — | — | — | — |
+| #4 Side column (think-on, content only) | n/a (outside <1s race) | `qwen3.5-9b-think` 80% [65%–93%] (med 254.1 s) | `gemma4-think` 73% [62%–85%] (med 16.2 s) / `bonsai2-think` 67% [52%–80%] (med 87.4 s) | n/a | 10.3 / 18.1 / 3.8 | — / 6.7 GB / — |
+| Bonsai 2 27B (Q2_0) | wins none | #1 50% [30%–68%] (`nothink`), #2 92% [84%–98%] (`think`, tie-break loss), #4 0% (`nothink`, 5.6 s first sentence) | — | 4/4 traps (12/12 = 100%) | 3.4–3.8 | 6.7 GB footprint (`think`) |
 | Cloud baseline (Claude, reference only) | n/a | pending | n/a | — | — | — |
 
 The baseline row is a reference point for how far local setups are from the frontier. Claude can never win a use case, and it never sees a test set with the private flag.
@@ -28,11 +28,14 @@ The baseline row is a reference point for how far local setups are from the fron
 | `gemma4-nothink` | 52% [32%–72%], 4/4 safe | **85% [74%–95%]** | **55% [38%–72%]** (809 ms) | 23.6 / 19.9 / 23.4 | 5.8 GB (`resources.json` RSS; 5.8 GB footprint in `.full-run-1.log`) |
 | `gemma4-think` | 60% [40%–80%], 4/4 safe | 89% [79%–97%] | 73% [62%–85%] (content only, 16.2 s) | 17.8 / 17.2 / 18.1 | 6.7 GB (5.4 GB footprint) |
 | `qwen3.5-9b-nothink` | **67% [48%–85%]**, 4/4 safe | 5% [1%–9%] | 10% [2%–22%] (1,658 ms) | 10.5 / 10.0 / 14.7 | 7.4 GB (10.0 GB footprint) |
-| `qwen3.5-9b-think` | 47% [30%–63%], **3/4 safe (83%)** | 19% [8%–31%] (partial: 28/102 runs, 74 errors) | 80% [65%–93%] (content only, 254.1 s) | 9.1 / 7.8 / 10.3 | incomplete (`resources.json` empty) |
+| `qwen3.5-9b-think` | 47% [30%–63%], **3/4 safe (83%)** | 75% [65%–85%] (7 of 102 runs timed out) | 80% [65%–93%] (content only, 254.1 s) | 9.1 / 6.7 / 10.3 | not recorded for the first passes (`resources.json` covers resumed passes only) |
+| `bonsai2-nothink` | 50% [30%–68%], 4/4 safe | 84% [76%–91%] | 0% [0%–0%] (5,627 ms) | 3.4 / 3.5 / 3.5 | 5.4 GB footprint (3.7 GB RSS) |
+| `bonsai2-think` | 45% [27%–63%], 4/4 safe | **92% [84%–98%]** (7 of 102 runs timed out) | 67% [52%–80%] (content only, 87.4 s) | 3.8 / 3.6 / 3.8 | 6.7 GB footprint (4.0 GB RSS) |
 
 - **#1 tie-break note:** `qwen3.5-9b-nothink` has the highest raw accuracy (`67%` [48%–85%]) and beats runner-up `gemma4-think` (`60%` [40%–80%]) on the thinking-off rule. `gemma4-nothink` (`52%` [32%–72%]) also overlaps `qwen3.5-9b-nothink` within bootstrap noise while running 2.2x faster on 4.98 GB weights.
-- **#2 tie-break note:** `gemma4-think` scores 4 points higher (`89%` vs `85%`), but its 95% CI overlaps `gemma4-nothink`, so thinking-off takes the win.
-- **#2 partial run note:** `qwen3.5-9b-think` only completed 28 of 102 runs on `02-pdf-answers` (19 passed, 74 timed out or hit server restarts) and has no final `resources.json` yet.
+- **#2 tie-break note:** `bonsai2-think` has the highest raw pass rate (`92%` [84%–98%]), but its 95% CI overlaps `gemma4-nothink` (`85%`), `gemma4-think` (`89%`) and `bonsai2-nothink` (`84%`). Thinking-off takes the win, and `gemma4-nothink` (4.98 GB) is smaller than `bonsai2-nothink` (7.63 GB).
+- **Bonsai 2 note:** at about 3.5 tok/s on this Mac it is 3 to 7 times slower than the other candidates (a full `bonsai2-think` pass took hours). It is accurate on #2 but misses the <1 s rule on #4 on every item, and trails on #1.
+- **#2 timeouts:** `qwen3.5-9b-think` and `bonsai2-think` each have 7 of 102 #2 runs that hit the 15-minute request limit. They count as fails.
 
 _Pareto charts (pass rate against speed and against memory) are rendered interactively from `results/summary/summary.json` on [nathanlcr.github.io](https://nathanlcr.github.io/#eval-explorer)._
 
