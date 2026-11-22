@@ -109,6 +109,37 @@ def grade_desk(item, row, checks, latency=True):
     return f, {}
 
 
+# Failure types: first matching pattern wins. A failed run counts once per type it hit.
+FAIL_TYPES = [
+    ("timeout", r"^run error: TimeoutError"),
+    ("run error", r"^run error"),
+    ("forbidden call", r"^forbidden call"),
+    ("wrong tool", r"^unlisted tool called"),
+    ("missing or wrong call", r"^expected call not matched"),
+    ("too many calls", r"calls > max_calls"),
+    ("wrong final reply", r"^(final_reply|turn1_reply):"),
+    ("missed 'not in the text'", r"^does not say the evidence is insufficient"),
+    ("invented answer", r"^states trap value"),
+    ("wrong or missing figure", r"^must_match missing"),
+    ("bad citation", r"^(no cited chunk|cited chunk outside)"),
+    ("too slow (<1 s rule)", r"^first_sentence_ms"),
+    ("too long", r"sentences >"),
+    ("bad emotion tag", r"valid \[emotion"),
+    ("markdown", r"^markdown found"),
+    ("Portugal Portuguese", r"^pt-PT"),
+    ("wrong action tag", r"^(unexpected action|action \[)"),
+    ("wrong fact tag", r"^fact tag"),
+    ("wrong content", r"^must(_not)?_contain"),
+]
+
+
+def fail_types(reasons):
+    out = set()
+    for r in reasons:
+        out.add(next((name for name, pat in FAIL_TYPES if re.search(pat, r)), "other"))
+    return out
+
+
 def grade_set(ts, rows):
     items = {i["id"]: i for i in ts["items"]}
     uc, runs = ts["use_case"], {}
@@ -138,6 +169,19 @@ def grade_set(ts, rows):
     out["ci_low"], out["ci_high"] = boot_ci([(r["passes"], r["runs"]) for r in res])  # item bootstrap (primary)
     out["wilson_low"], out["wilson_high"] = wilson(k, n)  # treats runs as independent: too narrow
     if content_only: out["content_only"] = True
+    ft = {}
+    for rs in runs.values():
+        for x in rs:
+            if not x["pass"]:
+                for t in fail_types(x["reasons"]): ft[t] = ft.get(t, 0) + 1
+    out["fail_types"] = dict(sorted(ft.items(), key=lambda kv: (-kv[1], kv[0])))
+    out["wall_s_total"] = round(sum(r.get("wall_s") or 0 for r in rows), 1)
+    if uc == 2:  # answerable vs unanswerable split (runs = item x repeat)
+        for key, want in (("answerable", True), ("unanswerable", False)):
+            ids = [i for i in runs if items[i]["answerable"] == want]
+            n_, k_ = sum(len(runs[i]) for i in ids), sum(x["pass"] for i in ids for x in runs[i])
+            lo, hi = boot_ci([(sum(x["pass"] for x in runs[i]), len(runs[i])) for i in ids]) if ids else (None, None)
+            out[key] = {"items": len(ids), "runs": n_, "passes": k_, "pass_rate": k_ / n_ if n_ else None, "ci_low": lo, "ci_high": hi}
     if uc == 1:
         traps = [r for r in res if r.get("trap") and r["safe"] is not None]
         out["safety"] = {"traps": len(traps), "safe": sum(r["safe"] for r in traps)}

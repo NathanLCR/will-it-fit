@@ -1,0 +1,497 @@
+{
+ "source": "results/summary/summary.json",
+ "charts": {
+  "pass_rate": [
+   {
+    "use_case": "01-tool-agent",
+    "setup": "gemma4-nothink",
+    "pct": 52,
+    "lo": 32,
+    "hi": 72,
+    "content_only": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "gemma4-think",
+    "pct": 60,
+    "lo": 40,
+    "hi": 80,
+    "content_only": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 67,
+    "lo": 48,
+    "hi": 85,
+    "content_only": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "qwen3.5-9b-think",
+    "pct": 47,
+    "lo": 30,
+    "hi": 63,
+    "content_only": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "bonsai2-nothink",
+    "pct": 50,
+    "lo": 30,
+    "hi": 68,
+    "content_only": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "bonsai2-think",
+    "pct": 45,
+    "lo": 27,
+    "hi": 63,
+    "content_only": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "gemma4-nothink",
+    "pct": 85,
+    "lo": 74,
+    "hi": 95,
+    "content_only": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "gemma4-think",
+    "pct": 89,
+    "lo": 79,
+    "hi": 97,
+    "content_only": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 5,
+    "lo": 1,
+    "hi": 9,
+    "content_only": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "qwen3.5-9b-think",
+    "pct": 75,
+    "lo": 65,
+    "hi": 85,
+    "content_only": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "bonsai2-nothink",
+    "pct": 84,
+    "lo": 76,
+    "hi": 91,
+    "content_only": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "bonsai2-think",
+    "pct": 92,
+    "lo": 84,
+    "hi": 98,
+    "content_only": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "gemma4-nothink",
+    "pct": 55,
+    "lo": 38,
+    "hi": 72,
+    "content_only": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "gemma4-think",
+    "pct": 73,
+    "lo": 62,
+    "hi": 85,
+    "content_only": true
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 10,
+    "lo": 2,
+    "hi": 22,
+    "content_only": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "qwen3.5-9b-think",
+    "pct": 80,
+    "lo": 65,
+    "hi": 93,
+    "content_only": true
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "bonsai2-nothink",
+    "pct": 0,
+    "lo": 0,
+    "hi": 0,
+    "content_only": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "bonsai2-think",
+    "pct": 67,
+    "lo": 52,
+    "hi": 80,
+    "content_only": true
+   }
+  ],
+  "speed": [
+   {
+    "use_case": "01-tool-agent",
+    "setup": "gemma4-nothink",
+    "pct": 52,
+    "lo": 32,
+    "hi": 72,
+    "content_only": false,
+    "x": 23.6
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "gemma4-think",
+    "pct": 60,
+    "lo": 40,
+    "hi": 80,
+    "content_only": false,
+    "x": 17.8
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 67,
+    "lo": 48,
+    "hi": 85,
+    "content_only": false,
+    "x": 10.5
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "qwen3.5-9b-think",
+    "pct": 47,
+    "lo": 30,
+    "hi": 63,
+    "content_only": false,
+    "x": 9.1
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "bonsai2-nothink",
+    "pct": 50,
+    "lo": 30,
+    "hi": 68,
+    "content_only": false,
+    "x": 3.4
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "bonsai2-think",
+    "pct": 45,
+    "lo": 27,
+    "hi": 63,
+    "content_only": false,
+    "x": 3.8
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "gemma4-nothink",
+    "pct": 85,
+    "lo": 74,
+    "hi": 95,
+    "content_only": false,
+    "x": 19.9
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "gemma4-think",
+    "pct": 89,
+    "lo": 79,
+    "hi": 97,
+    "content_only": false,
+    "x": 17.2
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 5,
+    "lo": 1,
+    "hi": 9,
+    "content_only": false,
+    "x": 10.0
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "qwen3.5-9b-think",
+    "pct": 75,
+    "lo": 65,
+    "hi": 85,
+    "content_only": false,
+    "x": 6.7
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "bonsai2-nothink",
+    "pct": 84,
+    "lo": 76,
+    "hi": 91,
+    "content_only": false,
+    "x": 3.5
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "bonsai2-think",
+    "pct": 92,
+    "lo": 84,
+    "hi": 98,
+    "content_only": false,
+    "x": 3.6
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "gemma4-nothink",
+    "pct": 55,
+    "lo": 38,
+    "hi": 72,
+    "content_only": false,
+    "x": 23.4
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "gemma4-think",
+    "pct": 73,
+    "lo": 62,
+    "hi": 85,
+    "content_only": true,
+    "x": 18.1
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 10,
+    "lo": 2,
+    "hi": 22,
+    "content_only": false,
+    "x": 14.7
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "qwen3.5-9b-think",
+    "pct": 80,
+    "lo": 65,
+    "hi": 93,
+    "content_only": true,
+    "x": 10.3
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "bonsai2-nothink",
+    "pct": 0,
+    "lo": 0,
+    "hi": 0,
+    "content_only": false,
+    "x": 3.5
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "bonsai2-think",
+    "pct": 67,
+    "lo": 52,
+    "hi": 80,
+    "content_only": true,
+    "x": 3.8
+   }
+  ],
+  "memory": [
+   {
+    "use_case": "01-tool-agent",
+    "setup": "gemma4-nothink",
+    "pct": 52,
+    "lo": 32,
+    "hi": 72,
+    "content_only": false,
+    "x": 5.76,
+    "partial": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "gemma4-think",
+    "pct": 60,
+    "lo": 40,
+    "hi": 80,
+    "content_only": false,
+    "x": 5.39,
+    "partial": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 67,
+    "lo": 48,
+    "hi": 85,
+    "content_only": false,
+    "x": 10.0,
+    "partial": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "qwen3.5-9b-think",
+    "pct": 47,
+    "lo": 30,
+    "hi": 63,
+    "content_only": false,
+    "x": 4.08,
+    "partial": true
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "bonsai2-nothink",
+    "pct": 50,
+    "lo": 30,
+    "hi": 68,
+    "content_only": false,
+    "x": 5.32,
+    "partial": false
+   },
+   {
+    "use_case": "01-tool-agent",
+    "setup": "bonsai2-think",
+    "pct": 45,
+    "lo": 27,
+    "hi": 63,
+    "content_only": false,
+    "x": 6.53,
+    "partial": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "gemma4-nothink",
+    "pct": 85,
+    "lo": 74,
+    "hi": 95,
+    "content_only": false,
+    "x": 5.76,
+    "partial": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "gemma4-think",
+    "pct": 89,
+    "lo": 79,
+    "hi": 97,
+    "content_only": false,
+    "x": 5.39,
+    "partial": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 5,
+    "lo": 1,
+    "hi": 9,
+    "content_only": false,
+    "x": 10.0,
+    "partial": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "qwen3.5-9b-think",
+    "pct": 75,
+    "lo": 65,
+    "hi": 85,
+    "content_only": false,
+    "x": 4.08,
+    "partial": true
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "bonsai2-nothink",
+    "pct": 84,
+    "lo": 76,
+    "hi": 91,
+    "content_only": false,
+    "x": 5.32,
+    "partial": false
+   },
+   {
+    "use_case": "02-pdf-answers",
+    "setup": "bonsai2-think",
+    "pct": 92,
+    "lo": 84,
+    "hi": 98,
+    "content_only": false,
+    "x": 6.53,
+    "partial": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "gemma4-nothink",
+    "pct": 55,
+    "lo": 38,
+    "hi": 72,
+    "content_only": false,
+    "x": 5.76,
+    "partial": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "gemma4-think",
+    "pct": 73,
+    "lo": 62,
+    "hi": 85,
+    "content_only": true,
+    "x": 5.39,
+    "partial": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "qwen3.5-9b-nothink",
+    "pct": 10,
+    "lo": 2,
+    "hi": 22,
+    "content_only": false,
+    "x": 10.0,
+    "partial": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "qwen3.5-9b-think",
+    "pct": 80,
+    "lo": 65,
+    "hi": 93,
+    "content_only": true,
+    "x": 4.08,
+    "partial": true
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "bonsai2-nothink",
+    "pct": 0,
+    "lo": 0,
+    "hi": 0,
+    "content_only": false,
+    "x": 5.32,
+    "partial": false
+   },
+   {
+    "use_case": "04-voice-desk",
+    "setup": "bonsai2-think",
+    "pct": 67,
+    "lo": 52,
+    "hi": 80,
+    "content_only": true,
+    "x": 6.53,
+    "partial": false
+   }
+  ]
+ }
+}

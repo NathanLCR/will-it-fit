@@ -51,7 +51,14 @@
           "candidate": "gemma4 E4B",
           "think": "off",
           "weights_gb": 4.98,
-          "note": "52% [32%\u201372%] accuracy and 4/4 traps safe, fastest at 23.6 tok/s and 4.98 GB weights. CI also overlaps qwen3.5-9b-nothink."
+          "note": "52% [32%\u201372%] accuracy and 4/4 traps safe, fastest at 23.6 tok/s and 4.98 GB weights. CI also overlaps qwen3.5-9b-nothink.",
+          "fail_types": {
+            "wrong final reply": 18,
+            "missing or wrong call": 17,
+            "forbidden call": 3,
+            "wrong tool": 3
+          },
+          "wall_s_total": 285.5
         },
         {
           "setup": "gemma4-think",
@@ -81,7 +88,14 @@
           "candidate": "gemma4 E4B",
           "think": "on",
           "weights_gb": 4.98,
-          "note": "60% [40%\u201380%] accuracy and 4/4 traps safe, at 17.8 tok/s. CIs overlap qwen3.5-9b-nothink, losing tie-break because thinking is on."
+          "note": "60% [40%\u201380%] accuracy and 4/4 traps safe, at 17.8 tok/s. CIs overlap qwen3.5-9b-nothink, losing tie-break because thinking is on.",
+          "fail_types": {
+            "wrong final reply": 16,
+            "missing or wrong call": 10,
+            "forbidden call": 4,
+            "wrong tool": 4
+          },
+          "wall_s_total": 2302.0
         },
         {
           "setup": "qwen3.5-9b-nothink",
@@ -111,7 +125,15 @@
           "candidate": "qwen3.5 9B",
           "think": "off",
           "weights_gb": 5.68,
-          "note": "Highest raw accuracy (67% [48%\u201385%]) and 4/4 traps safe (100%). Overlaps both gemma4-think (60%) and gemma4-nothink (52%) within bootstrap CI."
+          "note": "Highest raw accuracy (67% [48%\u201385%]) and 4/4 traps safe (100%). Overlaps both gemma4-think (60%) and gemma4-nothink (52%) within bootstrap CI.",
+          "fail_types": {
+            "wrong final reply": 13,
+            "missing or wrong call": 7,
+            "too many calls": 5,
+            "wrong tool": 5,
+            "forbidden call": 4
+          },
+          "wall_s_total": 1676.1
         },
         {
           "setup": "qwen3.5-9b-think",
@@ -141,7 +163,15 @@
           "candidate": "qwen3.5 9B",
           "think": "on",
           "weights_gb": 5.68,
-          "note": "47% [30%\u201363%] accuracy and failed trap t18 (executed git push --force twice across 3 runs: 3/4 traps, 83% trap runs safe)."
+          "note": "47% [30%\u201363%] accuracy and failed trap t18 (executed git push --force twice across 3 runs: 3/4 traps, 83% trap runs safe).",
+          "fail_types": {
+            "wrong final reply": 19,
+            "too many calls": 10,
+            "wrong tool": 8,
+            "missing or wrong call": 7,
+            "forbidden call": 5
+          },
+          "wall_s_total": 3774.0
         },
         {
           "setup": "bonsai2-nothink",
@@ -171,7 +201,15 @@
           "candidate": "Bonsai 2 27B",
           "think": "off",
           "weights_gb": 7.63,
-          "note": "50% [30%\u201368%], 4/4 traps safe, but only 3.4 tok/s on 7.63 GB weights."
+          "note": "50% [30%\u201368%], 4/4 traps safe, but only 3.4 tok/s on 7.63 GB weights.",
+          "fail_types": {
+            "wrong tool": 17,
+            "too many calls": 16,
+            "wrong final reply": 16,
+            "missing or wrong call": 9,
+            "forbidden call": 3
+          },
+          "wall_s_total": 6369.2
         },
         {
           "setup": "bonsai2-think",
@@ -201,7 +239,15 @@
           "candidate": "Bonsai 2 27B",
           "think": "on",
           "weights_gb": 7.63,
-          "note": "45% [27%\u201363%], 4/4 traps safe, at 3.8 tok/s."
+          "note": "45% [27%\u201363%], 4/4 traps safe, at 3.8 tok/s.",
+          "fail_types": {
+            "too many calls": 23,
+            "wrong tool": 23,
+            "wrong final reply": 17,
+            "missing or wrong call": 4,
+            "forbidden call": 3
+          },
+          "wall_s_total": 20634.2
         }
       ]
     },
@@ -239,7 +285,28 @@
           "candidate": "gemma4 E4B",
           "think": "off",
           "weights_gb": 4.98,
-          "note": "Winner by CI tie-breaker: 85% [74%\u201395%] overlaps gemma4-think (89% [79%\u201397%]), so thinking-off wins at 19.9 tok/s."
+          "note": "Winner by CI tie-breaker: 85% [74%\u201395%] overlaps gemma4-think (89% [79%\u201397%]), so thinking-off wins at 19.9 tok/s.",
+          "fail_types": {
+            "wrong or missing figure": 15,
+            "bad citation": 4
+          },
+          "wall_s_total": 1181.0,
+          "answerable": {
+            "items": 25,
+            "runs": 75,
+            "passes": 60,
+            "pass_rate": 0.8,
+            "ci_low": 0.64,
+            "ci_high": 0.9333333333333333
+          },
+          "unanswerable": {
+            "items": 9,
+            "runs": 27,
+            "passes": 27,
+            "pass_rate": 1.0,
+            "ci_low": 1.0,
+            "ci_high": 1.0
+          }
         },
         {
           "setup": "gemma4-think",
@@ -264,7 +331,29 @@
           "candidate": "gemma4 E4B",
           "think": "on",
           "weights_gb": 4.98,
-          "note": "Highest raw pass rate (89% [79%\u201397%]), passing 30/34 items cleanly, tied within bootstrap CI with gemma4-nothink."
+          "note": "Highest raw pass rate (89% [79%\u201397%]), passing 30/34 items cleanly, tied within bootstrap CI with gemma4-nothink.",
+          "fail_types": {
+            "wrong or missing figure": 7,
+            "bad citation": 4,
+            "missed 'not in the text'": 2
+          },
+          "wall_s_total": 5762.0,
+          "answerable": {
+            "items": 25,
+            "runs": 75,
+            "passes": 66,
+            "pass_rate": 0.88,
+            "ci_low": 0.76,
+            "ci_high": 0.9866666666666667
+          },
+          "unanswerable": {
+            "items": 9,
+            "runs": 27,
+            "passes": 25,
+            "pass_rate": 0.9259259259259259,
+            "ci_low": 0.8148148148148148,
+            "ci_high": 1.0
+          }
         },
         {
           "setup": "qwen3.5-9b-nothink",
@@ -289,7 +378,29 @@
           "candidate": "qwen3.5 9B",
           "think": "off",
           "weights_gb": 5.68,
-          "note": "5% [1%\u20139%]: answered prose without emitting [chunk_id] citations in 98 of 102 runs and failed most unanswerable items."
+          "note": "5% [1%\u20139%]: answered prose without emitting [chunk_id] citations in 98 of 102 runs and failed most unanswerable items.",
+          "fail_types": {
+            "bad citation": 73,
+            "missed 'not in the text'": 24,
+            "wrong or missing figure": 9
+          },
+          "wall_s_total": 2497.6,
+          "answerable": {
+            "items": 25,
+            "runs": 75,
+            "passes": 2,
+            "pass_rate": 0.02666666666666667,
+            "ci_low": 0.0,
+            "ci_high": 0.06666666666666667
+          },
+          "unanswerable": {
+            "items": 9,
+            "runs": 27,
+            "passes": 3,
+            "pass_rate": 0.1111111111111111,
+            "ci_low": 0.0,
+            "ci_high": 0.2222222222222222
+          }
         },
         {
           "setup": "qwen3.5-9b-think",
@@ -314,7 +425,30 @@
           "candidate": "qwen3.5 9B",
           "think": "on",
           "weights_gb": 5.68,
-          "note": "75% [65%\u201385%] after the resumed pass; 7 of 102 runs still timed out (900 s) and count as fails."
+          "note": "75% [65%\u201385%] after the resumed pass; 7 of 102 runs still timed out (900 s) and count as fails.",
+          "fail_types": {
+            "wrong or missing figure": 9,
+            "missed 'not in the text'": 7,
+            "timeout": 7,
+            "bad citation": 3
+          },
+          "wall_s_total": 51986.1,
+          "answerable": {
+            "items": 25,
+            "runs": 75,
+            "passes": 57,
+            "pass_rate": 0.76,
+            "ci_low": 0.6266666666666667,
+            "ci_high": 0.88
+          },
+          "unanswerable": {
+            "items": 9,
+            "runs": 27,
+            "passes": 20,
+            "pass_rate": 0.7407407407407407,
+            "ci_low": 0.5555555555555556,
+            "ci_high": 0.8888888888888888
+          }
         },
         {
           "setup": "bonsai2-nothink",
@@ -339,7 +473,30 @@
           "candidate": "Bonsai 2 27B",
           "think": "off",
           "weights_gb": 7.63,
-          "note": "84% [76%\u201391%]; CI overlaps gemma4-nothink, which wins on smaller weights (4.98 GB vs 7.63 GB)."
+          "note": "84% [76%\u201391%]; CI overlaps gemma4-nothink, which wins on smaller weights (4.98 GB vs 7.63 GB).",
+          "fail_types": {
+            "missed 'not in the text'": 8,
+            "bad citation": 4,
+            "wrong or missing figure": 4,
+            "timeout": 1
+          },
+          "wall_s_total": 10063.0,
+          "answerable": {
+            "items": 25,
+            "runs": 75,
+            "passes": 67,
+            "pass_rate": 0.8933333333333333,
+            "ci_low": 0.8133333333333334,
+            "ci_high": 0.96
+          },
+          "unanswerable": {
+            "items": 9,
+            "runs": 27,
+            "passes": 19,
+            "pass_rate": 0.7037037037037037,
+            "ci_low": 0.5555555555555556,
+            "ci_high": 0.8518518518518519
+          }
         },
         {
           "setup": "bonsai2-think",
@@ -364,7 +521,28 @@
           "candidate": "Bonsai 2 27B",
           "think": "on",
           "weights_gb": 7.63,
-          "note": "Highest raw pass rate (92% [84%\u201398%]) but its CI overlaps thinking-off setups, so it loses the tie-break; 7 of 102 runs timed out (900 s) and count as fails."
+          "note": "Highest raw pass rate (92% [84%\u201398%]) but its CI overlaps thinking-off setups, so it loses the tie-break; 7 of 102 runs timed out (900 s) and count as fails.",
+          "fail_types": {
+            "timeout": 7,
+            "missed 'not in the text'": 1
+          },
+          "wall_s_total": 31281.4,
+          "answerable": {
+            "items": 25,
+            "runs": 75,
+            "passes": 68,
+            "pass_rate": 0.9066666666666666,
+            "ci_low": 0.8,
+            "ci_high": 0.9866666666666667
+          },
+          "unanswerable": {
+            "items": 9,
+            "runs": 27,
+            "passes": 26,
+            "pass_rate": 0.9629629629629629,
+            "ci_low": 0.8888888888888888,
+            "ci_high": 1.0
+          }
         }
       ]
     },
@@ -404,7 +582,15 @@
           "candidate": "gemma4 E4B",
           "think": "off",
           "weights_gb": 4.98,
-          "note": "Outright winner: 55% [38%\u201372%] with median 809 ms first sentence (p90 1,112 ms) and 23.4 tok/s; CIs separate cleanly from qwen3.5-9b-nothink."
+          "note": "Outright winner: 55% [38%\u201372%] with median 809 ms first sentence (p90 1,112 ms) and 23.4 tok/s; CIs separate cleanly from qwen3.5-9b-nothink.",
+          "fail_types": {
+            "too slow (<1 s rule)": 14,
+            "bad emotion tag": 6,
+            "wrong action tag": 6,
+            "wrong fact tag": 2,
+            "wrong content": 1
+          },
+          "wall_s_total": 72.0
         },
         {
           "setup": "gemma4-think",
@@ -432,7 +618,14 @@
           "candidate": "gemma4 E4B",
           "think": "on",
           "weights_gb": 4.98,
-          "note": "Content-only side column (latency excluded): 73% [62%\u201385%] accuracy at 16.2 s median first sentence."
+          "note": "Content-only side column (latency excluded): 73% [62%\u201385%] accuracy at 16.2 s median first sentence.",
+          "fail_types": {
+            "bad emotion tag": 12,
+            "wrong action tag": 2,
+            "wrong fact tag": 2,
+            "wrong content": 1
+          },
+          "wall_s_total": 929.3
         },
         {
           "setup": "qwen3.5-9b-nothink",
@@ -459,7 +652,15 @@
           "candidate": "qwen3.5 9B",
           "think": "off",
           "weights_gb": 5.68,
-          "note": "10% [2%\u201322%]: median 1,658 ms (p90 3,340 ms) breached the 1,000 ms latency budget on nearly every turn and leaked [fact] tags."
+          "note": "10% [2%\u201322%]: median 1,658 ms (p90 3,340 ms) breached the 1,000 ms latency budget on nearly every turn and leaked [fact] tags.",
+          "fail_types": {
+            "too slow (<1 s rule)": 53,
+            "wrong fact tag": 15,
+            "wrong action tag": 10,
+            "wrong content": 3,
+            "too long": 1
+          },
+          "wall_s_total": 184.3
         },
         {
           "setup": "qwen3.5-9b-think",
@@ -486,7 +687,14 @@
           "candidate": "qwen3.5 9B",
           "think": "on",
           "weights_gb": 5.68,
-          "note": "Content-only side column (latency excluded): 80% [65%\u201393%] format/tag accuracy, but median 254.1 s first sentence makes it unusable for live voice."
+          "note": "Content-only side column (latency excluded): 80% [65%\u201393%] format/tag accuracy, but median 254.1 s first sentence makes it unusable for live voice.",
+          "fail_types": {
+            "wrong action tag": 6,
+            "wrong fact tag": 3,
+            "bad emotion tag": 2,
+            "wrong content": 2
+          },
+          "wall_s_total": 14781.6
         },
         {
           "setup": "bonsai2-nothink",
@@ -513,7 +721,15 @@
           "candidate": "Bonsai 2 27B",
           "think": "off",
           "weights_gb": 7.63,
-          "note": "0% [0%\u20130%]: first sentence median 5.6 s (p90 9.5 s) misses the <1 s rule on every item."
+          "note": "0% [0%\u20130%]: first sentence median 5.6 s (p90 9.5 s) misses the <1 s rule on every item.",
+          "fail_types": {
+            "too slow (<1 s rule)": 60,
+            "wrong action tag": 14,
+            "bad emotion tag": 9,
+            "wrong fact tag": 5,
+            "wrong content": 2
+          },
+          "wall_s_total": 554.1
         },
         {
           "setup": "bonsai2-think",
@@ -540,7 +756,14 @@
           "candidate": "Bonsai 2 27B",
           "think": "on",
           "weights_gb": 7.63,
-          "note": "Content-only side column: 67% [52%\u201380%], first sentence median 87 s."
+          "note": "Content-only side column: 67% [52%\u201380%], first sentence median 87 s.",
+          "fail_types": {
+            "bad emotion tag": 13,
+            "wrong action tag": 7,
+            "wrong content": 2,
+            "wrong fact tag": 1
+          },
+          "wall_s_total": 5630.2
         }
       ]
     }

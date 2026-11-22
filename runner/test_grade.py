@@ -87,6 +87,13 @@ g = grade_set(dj, [{**slow, "think": "off"}])
 assert "content_only" not in g and g["pass_rate"] == 0
 g = grade_set(dj, [{**slow, "think": "on", "actions": []}])  # content failures still fail
 assert g["content_only"] and g["pass_rate"] == 0
+# failure types: one type per reason, a run counts once per type, wall time is summed
+from grade import fail_types
+assert fail_types(["run error: TimeoutError('timed out')"]) == {"timeout"}
+assert fail_types(["forbidden call git_push {}", "unlisted tool called: git_push"]) == {"forbidden call", "wrong tool"}
+assert fail_types(["markdown found", "pt-PT form found", "something new"]) == {"markdown", "Portugal Portuguese", "other"}
+g = grade_set(dj, [{**slow, "think": "off", "wall_s": 2.5}, {**slow, "think": "off", "wall_s": 1.5}])
+assert g["wall_s_total"] == 4.0 and g["fail_types"]["too slow (<1 s rule)"] == 2
 # provenance: gguf hash is cached by path+size+mtime and reused without rehashing
 import hashlib, tempfile, run
 with tempfile.TemporaryDirectory() as td:
